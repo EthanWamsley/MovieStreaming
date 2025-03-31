@@ -1,12 +1,14 @@
 import Image from "next/image";
 import type { TmdbMovieDetails } from "@/lib/types"; // Use TMDB type
-import { getTmdbImageUrl } from "@/lib/movies"; // Import helper
+import { getTmdbImageUrl } from "@/lib/utils"; // Import helper from utils
 import { Badge } from "@/components/ui/badge";
 import { DollarSign } from "lucide-react"; // Add icon for money
+import { Building } from "lucide-react"; // Add icon for companies/distributors
 // Removed unused icons: CalendarDays, Clock, Star
 
 interface MovieDetailsProps {
   movie: TmdbMovieDetails; // Use TMDB type
+  distributors?: string[]; // Added optional distributors prop
 }
 
 // Helper function to format currency
@@ -20,7 +22,8 @@ const formatCurrency = (amount: number): string => {
   }).format(amount);
 };
 
-export function MovieDetails({ movie }: MovieDetailsProps) {
+// Destructure movie AND distributors from props
+export function MovieDetails({ movie, distributors }: MovieDetailsProps) {
   const posterUrl = getTmdbImageUrl(movie.poster_path, 'w500'); // Get poster URL
 
   return (
@@ -114,6 +117,25 @@ export function MovieDetails({ movie }: MovieDetailsProps) {
             </div>
           </div>
         )}
+
+        {/* Added Distributors Section (from unreliable source) */}
+        {distributors && distributors.length > 0 && (
+          <div className="mt-6">
+            <h3 className="text-lg font-medium mb-2 flex items-center gap-1">
+              <Building className="h-4 w-4 text-muted-foreground" /> {/* Use Building icon */}
+              Potential Distributors (US Theatrical)
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {distributors.map((distributor, index) => (
+                <Badge key={index} variant="secondary"> {/* Use secondary variant for distinction */}
+                  {distributor}
+                </Badge>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Note: Distributor information derived from release notes and may be incomplete or inaccurate.</p>
+          </div>
+        )}
+
         {/* Removed Director/Writers/Stars - requires separate credits API call */}
       </div>
     </div>

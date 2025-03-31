@@ -1,8 +1,8 @@
-import type { TmdbMovieDetails, TmdbWatchProvidersResponse, TmdbSearchResponse } from "./types";
+import type { TmdbMovieDetails, TmdbWatchProvidersResponse, TmdbSearchResponse, TmdbReleaseDatesResponse } from "./types"; // Added TmdbReleaseDatesResponse
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_API_BASE_URL = "https://api.themoviedb.org/3";
-const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
+// const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p"; // Moved to lib/utils.ts
 
 if (!TMDB_API_KEY) {
   throw new Error("Missing TMDB_API_KEY environment variable");
@@ -66,8 +66,13 @@ export async function searchMovies(query: string, page: number = 1): Promise<Tmd
     return fetchTmdb<TmdbSearchResponse>('/search/movie', { query: query, page: String(page) });
 }
 
-// Helper functions for image URLs
-export function getTmdbImageUrl(path: string | null | undefined, size: 'w500' | 'original' | 'w200' | 'w300' | 'w400' = 'w500'): string | null {
-  if (!path) return null;
-  return `${TMDB_IMAGE_BASE_URL}/${size}${path}`;
+// Fetch release dates (potential source for distributor info)
+export async function getMovieReleaseDates(movieId: string): Promise<TmdbReleaseDatesResponse> {
+    if (!movieId) {
+        throw new Error("Movie ID is required");
+    }
+    return fetchTmdb<TmdbReleaseDatesResponse>(`/movie/${movieId}/release_dates`);
 }
+
+// Helper function for image URLs moved to lib/utils.ts
+// export function getTmdbImageUrl(...) { ... }

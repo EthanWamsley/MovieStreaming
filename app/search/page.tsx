@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { searchMovies, getTmdbImageUrl } from '@/lib/movies';
+import { searchMovies } from '@/lib/movies'; // Removed getTmdbImageUrl from here
+import { getTmdbImageUrl } from '@/lib/utils'; // Added import from utils
 import type { TmdbMovieSearchResult } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

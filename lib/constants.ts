@@ -40,7 +40,7 @@ export const STUDIO_STREAMING_ESTIMATES: Record<string, StudioEstimate> = {
   'lionsgate': { name: 'STARZ/Peacock', logo: '/placeholder-logo.svg', windowDays: 180 }, // Complex deals, often longer
 
   // A24 - Often varies, sometimes Prime Video, Max, or Showtime/Paramount+
-  'a24': { name: 'Varies (Max/Prime?)', logo: '/placeholder-logo.svg', windowDays: 90 }, // Rough estimate
+  'a24': { name: 'Max/Prime', logo: '/placeholder-logo.svg', windowDays: 110 }, // Rough estimate
 };
 
 // Helper function to find the best estimate based on production companies
@@ -55,5 +55,65 @@ export function getStreamingEstimate(companies: TmdbProductionCompany[]): Studio
     }
   }
   // Could add more fuzzy matching or checks for parent companies if needed
+  return null;
+}
+
+// List of common distributors for manual selection
+// This list can be expanded based on common distributors seen in the market.
+export const DISTRIBUTOR_LIST: string[] = [
+  "A24",
+  "Warner Bros. / New Line", // Combined
+  "Disney / 20th Century / Searchlight", // Combined for simplicity
+  "Sony Pictures / Columbia / Screen Gems", // Combined
+
+  "Bleecker Street",
+  "Briarcliff Entertainment",
+  "Focus Features", // Part of Universal
+  "IFC Films",
+  "Lionsgate",
+  "Magnolia Pictures",
+  "Neon",
+  "Open Road Films",
+  "Paramount Pictures",
+  "Roadside Attractions",
+  "Universal Pictures",
+  "Well Go USA Entertainment",
+  // Add more as needed
+  "Other / Independent",
+];
+
+// Helper function to map a selected distributor name to a streaming estimate
+// This requires some interpretation as distributor names might cover multiple studios.
+export function getEstimateForDistributor(distributorName: string): StudioEstimate | null {
+  const lowerName = distributorName.toLowerCase();
+
+  // Simple mapping based on keywords in the DISTRIBUTOR_LIST names
+  if (lowerName.includes('disney') || lowerName.includes('20th century') || lowerName.includes('searchlight')) {
+    // Prioritize Searchlight/20th Century estimate if present, otherwise Disney main
+    return STUDIO_STREAMING_ESTIMATES['searchlight pictures'] ?? STUDIO_STREAMING_ESTIMATES['20th century studios'] ?? STUDIO_STREAMING_ESTIMATES['walt disney pictures'] ?? null;
+  }
+  if (lowerName.includes('warner') || lowerName.includes('new line')) {
+    return STUDIO_STREAMING_ESTIMATES['warner bros. pictures'] ?? null;
+  }
+  if (lowerName.includes('universal') || lowerName.includes('focus features')) {
+    // Prioritize Focus Features if name matches, otherwise Universal main
+    return lowerName.includes('focus features') ? STUDIO_STREAMING_ESTIMATES['focus features'] : STUDIO_STREAMING_ESTIMATES['universal pictures'] ?? null;
+  }
+  if (lowerName.includes('paramount')) {
+    return STUDIO_STREAMING_ESTIMATES['paramount'] ?? null;
+  }
+  if (lowerName.includes('sony') || lowerName.includes('columbia') || lowerName.includes('screen gems')) {
+    return STUDIO_STREAMING_ESTIMATES['columbia pictures'] ?? null; // Use Columbia as the primary Sony estimate key
+  }
+  if (lowerName.includes('lionsgate')) {
+    return STUDIO_STREAMING_ESTIMATES['lionsgate'] ?? null;
+  }
+  if (lowerName.includes('a24')) {
+    return STUDIO_STREAMING_ESTIMATES['a24'] ?? null;
+  }
+  // Add more mappings for other distributors if estimates exist or make sense
+  // e.g., Amazon, Apple often have their own platforms immediately or shortly after release.
+
+  // Default case if no specific mapping found
   return null;
 }
