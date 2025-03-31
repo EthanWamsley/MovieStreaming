@@ -2,11 +2,12 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image"; // Import Image component
+import { Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function SearchForm() {
   const [query, setQuery] = useState("")
@@ -32,7 +33,18 @@ export function SearchForm() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
-      <div className="flex gap-2">
+      {/* Add items-center to vertically align logo, input, and button */}
+      <div className="flex gap-1 items-center">
+        {/* Add the logo here */}
+        <div className="flex-shrink-0 mr-1"> {/* Added margin-right for spacing */}
+          <Image
+            src="/movieStreamingLogo.png"
+            alt="Movie Streaming Finder Logo"
+            width={40} // Further reduced width
+            height={40} // Keep height constraint for alignment
+            className="object-contain" // Ensure logo scales nicely
+          />
+        </div>
         <Input
           type="text"
           placeholder="Search for a movie..."

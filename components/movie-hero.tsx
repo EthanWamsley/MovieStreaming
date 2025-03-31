@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { TmdbMovieDetails } from "@/lib/types"; // Use TMDB type
-import { getTmdbImageUrl } from "@/lib/movies"; // Import helper
+import { getTmdbImageUrl } from "@/lib/utils"; // Import helper from utils
 
 interface MovieHeroProps {
   movie: TmdbMovieDetails; // Use TMDB type

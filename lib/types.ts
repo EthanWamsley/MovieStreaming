@@ -13,6 +13,7 @@ export interface Movie {
   writers: string[]
   stars: string[]
   streaming: StreamingService[]
+  distributors: string[] // Added distributors
 }
 
 export interface StreamingService {
@@ -90,4 +91,26 @@ export interface TmdbSearchResponse {
   results: TmdbMovieSearchResult[];
   total_pages: number;
   total_results: number;
+}
+
+// TMDb Release Dates Types
+export interface TmdbReleaseDate {
+  certification: string;
+  descriptors: string[];
+  iso_639_1: string; // Language code (e.g., "en")
+  note: string | null;
+  release_date: string; // YYYY-MM-DDTHH:mm:ss.sssZ
+  type: number; // Release type (e.g., 1: Premiere, 2: Theatrical (limited), 3: Theatrical, 4: Digital, 5: Physical, 6: TV)
+  // Distributor info might be nested or implied, often not explicitly named in this endpoint.
+  // We might need to infer or use a different endpoint if this doesn't suffice.
+}
+
+export interface TmdbReleaseDatesResult {
+  iso_3166_1: string; // Country code (e.g., "US")
+  release_dates: TmdbReleaseDate[];
+}
+
+export interface TmdbReleaseDatesResponse {
+  id: number;
+  results: TmdbReleaseDatesResult[];
 }
